@@ -23,7 +23,7 @@
 
         <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
     </head>
-    <body onload="addBox()">
+    <body>
         <div class="container" style="margin-top: 15px;">
             <div class="row col-xs-8">
                 <h1>Lights Out Game</h1>
@@ -31,7 +31,7 @@
             </div>
             <div class="row justify-content-center">
                 <div class="col-4">
-                <form action="index.html" method="get" id="myForm">
+                <form onsubmit="return false" method="get" id="myForm">
                     <div class="mb-3">
                         <label for="columnsNum" class="form-label">Number of Columns</label>
                         <input type="number" min="1" class="form-control" id="columnsNum" name="columnsNum" required/>
@@ -41,7 +41,7 @@
                         <input type="number" min="1" class="form-control" id="rowsNum" name="rowsNum" required/>
                     </div>
                     <div class="text-center">                
-                        <button type=submit class="btn btn-primary">Start Game</button>
+                        <button type=submit class="btn btn-primary" id="start">Start Game</button>
                     </div>
                 </form>
                 </div>
@@ -65,22 +65,40 @@
         <script type="text/javascript">
 
         var won = false;
-        var json;
+        let json;
         var r = 0;
         var c = 0;
 
-        function addBox() { 
+        // var queryString = window.location.search;
+        // var urlParams = new URLSearchParams(queryString);
+        // r = urlParams.get('rowsNum');
+        // c = urlParams.get('columnsNum');
 
-            event.preventDefault();
+        $( "#myForm" ).bind( "submit", function() {
 
-            document.getElementById("table-game").innerHTML = "";
+            r = $("#rowsNum").val()
+            c = $("#columnsNum").val()
 
-            var table = document.getElementById("table-game");
+            $.ajax({
+                url : "setup.php",
+                type : 'GET',
+                data: {
+                    'columnsNum': c,
+                    'rowsNum': r
+                },
+                success : function(response) {              
+                    // alert('Data: ' + response);
+                    json = response;
+                    console.log(json);
+                },
+                error : function(request,error) {
+                    alert("ERROR:" + error);
+                }
+            });
+            
+            $("#table-game").html("");
 
-            var queryString = window.location.search;
-            var urlParams = new URLSearchParams(queryString);
-            r = urlParams.get('rowsNum');
-            c = urlParams.get('columnsNum');
+            var table = $("#table-game");
 
             if(r == null || c == null){
                 return;
@@ -92,19 +110,17 @@
             var count = 1;
 
             for(let i=0; i<r; i++){
-                row = table.insertRow(i);
+                $("#table-game").append("<tr> ")
 
                 for(let j=0; j<c; j++){
-                    cell = row.insertCell(j);
-                    cell.innerHTML = "<td></td>";
-                    cell.id = count + "";
-                    count += 1;
+                    $("#table-game").append("<td id='"+ count +"'> </td>")
+                    count+=1;
                 }
-            }
 
-            document.getElementById("rowsNum").value = "";
-            document.getElementById("columnsNum").value = "";
-        }
+                $("#table-game").append(" </tr>")
+            }
+        });
+
 
         $('#table-game').on( 'click', 'td', function () {
             this.style.backgroundColor = this.style.backgroundColor == 'blue' ? 'lightblue' : 'blue';
@@ -124,28 +140,6 @@
 
             var id_up = parseInt(this.id) - c;
             $('#'+id_up+"").css("background-color", $('#'+id_up+"").css("background-color") == 'rgb(0, 0, 255)' ? 'lightblue' : 'blue');
-        });
-
-
-        var queryString = window.location.search;
-        var urlParams = new URLSearchParams(queryString);
-        r = urlParams.get('rowsNum');
-        c = urlParams.get('columnsNum');
-
-         $.ajax({
-            url : "setup.php",
-            type : 'GET',
-            data: {
-                'columnsNum': c,
-                'rowsNum': r
-            },
-            success : function(response) {              
-                alert('Data: ' + response);
-                json = response;
-            },
-            error : function(request,error) {
-                alert("ERROR:" + error);
-            }
         });
 
         
