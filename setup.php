@@ -1,14 +1,21 @@
 <?php
 
-$json = [];
+$lights_on = [];
 
 $rows = $_GET["rows-num"];
 $columns = $_GET["columns-num"];
 $length = $_GET["columns-num"] * $_GET["rows-num"];
 
-if($length<=5){
-    $json = [1, 2, 3, 4, 5];
+if($length>5){
+    for($i=0; $i<5; $i++){
+        $r = rand(0, rows);
+        $c = rand(0, columns);
+        $position = [$r, $c];
+        // $light_on.append( );
+    }
 }
+
+$json = json_encode(lights_on);
 
 
 ?>

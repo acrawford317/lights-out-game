@@ -65,6 +65,8 @@
         <script type="text/javascript">
 
         var won = false;
+        var r = 0;
+        var c = 0;
 
         function addBox() { 
 
@@ -73,8 +75,8 @@
             document.getElementById("table-game").innerHTML = "";
 
             var table = document.getElementById("table-game");
-            var r = document.getElementById("rows-num").value;
-            var c = document.getElementById("columns-num").value;
+            r = document.getElementById("rows-num").value;
+            c = document.getElementById("columns-num").value;
             var error = document.getElementById("error");
 
             if(r == "" || c == ""){
@@ -87,30 +89,42 @@
             var row;
             var cell;
 
+            var count = 1;
+
             for(let i=0; i<r; i++){
                 row = table.insertRow(i);
 
                 for(let j=0; j<c; j++){
                     cell = row.insertCell(j);
                     cell.innerHTML = "<td></td>";
-                    cell.id = i + "" + j;
+                    cell.id = count + "";
+                    count += 1;
                 }
             }
 
             document.getElementById("rows-num").value = "";
             document.getElementById("columns-num").value = "";
-
         }
-
 
         $('#table-game').on( 'click', 'td', function () {
             this.style.backgroundColor = this.style.backgroundColor == 'blue' ? 'lightblue' : 'blue';
+
+            if(this.id % parseInt(c) != 0){
+                var id_right = parseInt(this.id) + 1;
+                $('#'+id_right+"").css("background-color", $('#'+id_right+"").css("background-color") == 'rgb(0, 0, 255)' ? 'lightblue' : 'blue');
+            }
+
+            if((this.id-1) % parseInt(c) != 0){
+                var id_left = parseInt(this.id) - 1;
+                $('#'+id_left+"").css("background-color", $('#'+id_left+"").css("background-color") == 'rgb(0, 0, 255)' ? 'lightblue' : 'blue');
+            }
+
+            var id_down = parseInt(this.id) + parseInt(c);
+            $('#'+id_down+"").css("background-color", $('#'+id_down+"").css("background-color") == 'rgb(0, 0, 255)' ? 'lightblue' : 'blue');
+
+            var id_up = parseInt(this.id) - c;
+            $('#'+id_up+"").css("background-color", $('#'+id_up+"").css("background-color") == 'rgb(0, 0, 255)' ? 'lightblue' : 'blue');
         });
-
-        // $('#table-game').on( 'click', '#00', function () {
-        //     this.style.backgroundColor = this.style.backgroundColor == 'red' ? 'lightblue' : 'red';
-        // });
-
             
         </script>
 
